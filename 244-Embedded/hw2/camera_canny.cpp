@@ -145,8 +145,12 @@ int main(int argc, char **argv)
 		}
 
 	//free resrources
-	delete[] frame;
-	delete[] grayframe;
+	free(frame);
+	free(grayframe);
+	for(int i = 0; i < n_imgs; ++i){
+		free(images[i]);
+	}
+	free(images);
 	//		grayframe.release();
 	//    delete images;
 	return 0;
