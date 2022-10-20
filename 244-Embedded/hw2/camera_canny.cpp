@@ -138,10 +138,8 @@ int main(int argc, char **argv)
 
 			grayframe[i].data = edge;
 			printf("[INFO] (On the pop-up window) Press ESC to terminate the program...\n");
-			for(int i = 0; i < n_imgs; ++i){
-				imshow("[EDGE] this is you, smile! :)", grayframe[i]);
-				if( waitKey(10) == 27 ) break; // stop capturing by pressing ESC
-			}
+			imshow("[EDGE] this is you, smile! :)", grayframe[i]);
+			if( waitKey(10) == 27 ) break; // stop capturing by pressing ESC
 		}
 
 	//free resrources
