@@ -1,5 +1,6 @@
 /**
  */
+#include <stdlib.h>
 #include <ctime>
 #include <iostream>
 #include <unistd.h>
@@ -21,7 +22,7 @@ int main(int argc, char **argv)
 	char* dirfilename;        /* Name of the output gradient direction image */
 	char outfilename[128];    /* Name of the output "edge" image */
 	char composedfname[128];  /* Name of the output "direction" image */
-	unsigned char *image;     /* The input image */
+	unsigned char **images;     /* The input image */
 	unsigned char *edge;      /* The output edge image */
 	int rows, cols;           /* The dimensions of the image. */
 	float sigma,              /* Standard deviation of the gaussian kernel. */
@@ -74,9 +75,13 @@ int main(int argc, char **argv)
 	cap.set(CAP_PROP_FRAME_HEIGHT,HEIGHT);
 
 	//	Mat frame[], grayframe;
-	Mat *frame = new Mat[n_imgs];
-	Mat *grayframe = new Mat[n_imgs];
-	image = new unsigned char[n_imgs];
+	Mat *frame = (Mat *)calloc(n_imgs, sizeof(*frame));
+	Mat *grayframe = (Mat *)calloc(n_imgs, sizeof(*grayframe));
+	images =  (unsigned char **)calloc(n_imgs, sizeof(unsigned char *));
+	for(int i = 0; i < n_imgs; ++i)
+		{
+			images[i] =  (unsigned char *)calloc(1, sizeof(unsigned char));
+		}
 
 	printf("[INFO] (On the pop-up window) Press ESC to start Canny edge detection...\n");
 	for(int i = 0; i < n_imgs; ++i)
@@ -97,7 +102,7 @@ int main(int argc, char **argv)
 			cap >> frame[i];
 			mid = clock();
 			cvtColor(frame[i], grayframe[i], COLOR_BGR2GRAY);
-			image[i] = grayframe[i].data;
+			images[i] = grayframe[i].data;
 
 
 			/****************************************************************************
@@ -109,7 +114,7 @@ int main(int argc, char **argv)
 								sigma, tlow, thigh);
 				dirfilename = composedfname;
 			}
-			canny(image[i], rows, cols, sigma, tlow, thigh, &edge, dirfilename);
+			canny(images[i], rows, cols, sigma, tlow, thigh, &edge, dirfilename);
 
 			/****************************************************************************
 			 * Write out the edge image to a file.
@@ -126,7 +131,7 @@ int main(int argc, char **argv)
 			time_capture = (double) (mid - begin) / CLOCKS_PER_SEC;
 			time_process = (double) (end - mid) / CLOCKS_PER_SEC;
 
-			imshow("[GRAYSCALE] this is you, smile! :)", grayframe);
+			imshow("[GRAYSCALE] this is you, smile! :)", grayframe[i]);
 
 			printf("Elapsed time for capturing+processing one frame: %lf + %lf => %lf seconds\n", time_capture, time_process, time_elapsed);
 			printf("FPS: %01lf\n", NFRAME/time_elapsed);
@@ -143,6 +148,6 @@ int main(int argc, char **argv)
 	delete[] frame;
 	delete[] grayframe;
 	//		grayframe.release();
-	//    delete image;
+	//    delete images;
 	return 0;
 }
