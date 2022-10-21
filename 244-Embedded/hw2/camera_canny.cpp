@@ -1,6 +1,8 @@
 /**
  */
 #include <stdlib.h>
+#include <sys/time.h>
+
 #include <ctime>
 #include <iostream>
 #include <unistd.h>
@@ -83,65 +85,107 @@ int main(int argc, char **argv)
 			images[i] =  (unsigned char *)calloc(1, sizeof(unsigned char));
 		}
 
-	printf("[INFO] (On the pop-up window) Press ESC to start Canny edge detection...\n");
-	for(int i = 0; i < n_imgs; ++i)
-		{
-			cap >> frame[i];
-	 		if( frame[i].empty() ) break; // end of video stream
-			imshow("[RAW] this is you, smile! :)", frame[i]);
-	 		if( waitKey(10) == 27 ) break; // stop capturing by pressing ESC
-		}
+	double avg_cpu_proc_time = 0.0, avg_wall_proc_time;
+	char *frame_title = (char *)calloc(256, sizeof(char));
+
+	//	printf("[INFO] (On the pop-up window) Press ESC to start Canny edge detection...\n");
+	printf("[INFO] Beginning image capture...\n");
+	// for(int i = 0; i < n_imgs; ++i)
+	// 	{
+	// 		cap >> frame[i];
+	//  		if( frame[i].empty() ) break; // end of video stream
+	// 		sprintf(frame_title, "[RAW] frame%03d", i);
+	// 		imshow(frame_title, frame[i]);
+	//  		if( waitKey(10) == 27 ) break; // stop capturing by pressing ESC
+	// 	}
 
 	clock_t begin, mid, end;
 	double time_elapsed, time_capture, time_process;
+	struct timeval begin_tv, mid_tv, end_tv;
+	double time_elapsed_wall, time_capture_wall, time_process_wall;
+	/* has members
+		 time_t       tv_sec;   seconds since Jan. 1, 1970 
+		 suseconds_t  tv_usec;  and microseconds 
+	*/
 
-	begin = clock();
 	//capture
-	for(int i = 0; i < n_imgs; ++i)
-		{
-			cap >> frame[i];
-			mid = clock();
-			cvtColor(frame[i], grayframe[i], COLOR_BGR2GRAY);
-			images[i] = grayframe[i].data;
-
-
-			/****************************************************************************
-			 * Perform the edge detection. All of the work takes place here.
-			 ****************************************************************************/
-			if(VERBOSE) printf("Starting Canny edge detection.\n");
-			if(dirfilename != NULL){
-				sprintf(composedfname, "camera_s_%3.2f_l_%3.2f_h_%3.2f.fim",
-								sigma, tlow, thigh);
-				dirfilename = composedfname;
-			}
-			canny(images[i], rows, cols, sigma, tlow, thigh, &edge, dirfilename);
-
-			/****************************************************************************
-			 * Write out the edge image to a file.
-			 ****************************************************************************/
-			//			sprintf(outfilename, "camera_s_%3.2f_l_%3.2f_h_%3.2f.pgm", sigma, tlow, thigh);
-			sprintf(outfilename, "frame%03d_%3.2f_l_%3.2f_h_%3.2f.pgm", i, sigma, tlow, thigh);
-			if(VERBOSE) printf("Writing the edge iname in the file %s.\n", outfilename);
-			if(write_pgm_image(outfilename, edge, rows, cols, NULL, 255) == 0){
-				fprintf(stderr, "Error writing the edge image, %s.\n", outfilename);
-				exit(1);
-			}
-
-			end = clock();
-			time_elapsed = (double) (end - begin) / CLOCKS_PER_SEC;
-			time_capture = (double) (mid - begin) / CLOCKS_PER_SEC;
-			time_process = (double) (end - mid) / CLOCKS_PER_SEC;
-
-			imshow("[GRAYSCALE] this is you, smile! :)", grayframe[i]);
-
-			printf("Elapsed time for capturing+processing one frame: %lf + %lf => %lf seconds\n", time_capture, time_process, time_elapsed);
-			printf("FPS: %01lf\n", NFRAME/time_elapsed);
-
-			grayframe[i].data = edge;
-			printf("[INFO] (On the pop-up window) Press ESC to terminate the program...\n");
-			imshow("[EDGE] this is you, smile! :)", grayframe[i]);
-			if( waitKey(10) == 27 ) break; // stop capturing by pressing ESC
+	for(int i = 0; i < n_imgs; ++i) {
+		begin = clock();// START
+		if ( 0 == gettiimeofday(&begin_tv) ) {
+			perror("Trouble with begin_tv");
+			exit(EXIT_FAILURE);
 		}
+
+		cap >> frame[i];
+		if( frame[i].empty() ) break; // end of video stream
+		mid = clock();// MIDDLE
+		if ( 0 == gettiimeofday(&mid_tv) ) {
+			perror("Trouble with mid_tv");
+			exit(EXIT_FAILURE);
+		}
+
+		sprintf(frame_title, "[RAW] frame%03d", i);
+		imshow(frame_title, frame[i]);
+
+		cvtColor(frame[i], grayframe[i], COLOR_BGR2GRAY);
+		images[i] = grayframe[i].data;
+
+
+		/****************************************************************************
+		 * Perform the edge detection. All of the work takes place here.
+		 ****************************************************************************/
+		if(VERBOSE) printf("Starting Canny edge detection.\n");
+		if(dirfilename != NULL){
+			sprintf(composedfname, "camera_s_%3.2f_l_%3.2f_h_%3.2f.fim",
+							sigma, tlow, thigh);
+			dirfilename = composedfname;
+		}
+		canny(images[i], rows, cols, sigma, tlow, thigh, &edge, dirfilename);
+
+		/****************************************************************************
+		 * Write out the edge image to a file.
+		 ****************************************************************************/
+		//			sprintf(outfilename, "camera_s_%3.2f_l_%3.2f_h_%3.2f.pgm", sigma, tlow, thigh);
+		sprintf(outfilename, "frame%03d_%3.2f_l_%3.2f_h_%3.2f.pgm", i, sigma, tlow, thigh);
+		if(VERBOSE) printf("Writing the edge iname in the file %s.\n", outfilename);
+		if(write_pgm_image(outfilename, edge, rows, cols, NULL, 255) == 0){
+			fprintf(stderr, "Error writing the edge image, %s.\n", outfilename);
+			exit(1);
+		}
+
+		end = clock();//FINISH
+		if ( 0 == gettiimeofday(&end_tv) ) {
+			perror("Trouble with end_tv");
+			exit(EXIT_FAILURE);
+		}
+		
+		time_elapsed = (double) (end - begin) / CLOCKS_PER_SEC;
+		time_capture = (double) (mid - begin) / CLOCKS_PER_SEC;
+		time_process = (double) (end - mid)   / CLOCKS_PER_SEC;
+
+		time_elapsed_wall = (double) (end_tv.tv_sec - begin_tv.tv_sec);
+		time_capture_wall = (double) (mid_tv.tv_sec - begin_tv.tv_sec);
+		time_process_wall = (double) (end_tv.tv_sec - mid_tv.tv_sec);
+
+
+		avg_cpu_proc_time  += time_process;
+		avg_wall_proc_time += time_process_wall;
+
+		imshow("[GRAYSCALE] this is you, smile! :)", grayframe[i]);
+
+		printf("Elapsed time for capturing+processing one frame: %lf + %lf => %lf seconds\n", time_capture, time_process, time_elapsed);
+		printf("FPS: %01lf\n", NFRAME/time_elapsed);
+
+		grayframe[i].data = edge;
+		printf("[INFO] (On the pop-up window) Press ESC to terminate the program...\n");
+		imshow("[EDGE] this is you, smile! :)", grayframe[i]);
+		if( waitKey(10) == 27 ) break; // stop capturing by pressing ESC
+	}
+
+	avg_cpu_proc_time  /= (double)n_imgs;
+	avg_wall_proc_time /= (double)n_imgs;
+
+	printf("The difference in the cpu and wall time measurements is = %lf\n", avg_wall_proc_time - avg_cpu_proc_time);
 
 	//free resrources
 	free(frame);
