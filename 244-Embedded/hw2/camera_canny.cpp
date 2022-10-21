@@ -176,6 +176,9 @@ int main(int argc, char **argv)
 		printf("Elapsed time for capturing+processing one frame: %lf + %lf => %lf seconds\n", time_capture, time_process, time_elapsed);
 		printf("FPS: %01lf\n", NFRAME/time_elapsed);
 
+		printf("Elapsed time for capturing+processing one frame WALL: %lf + %lf => %lf seconds\n", time_capture_wall, time_process_wall, time_elapsed_wall);
+		printf("FPS: %01lf\n", NFRAME/time_elapsed_wall);
+
 		grayframe[i].data = edge;
 		printf("[INFO] (On the pop-up window) Press ESC to terminate the program...\n");
 		//		imshow("[EDGE] this is you, smile! :)", grayframe[i]);
