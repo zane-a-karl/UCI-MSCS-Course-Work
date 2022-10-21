@@ -18,6 +18,7 @@ using namespace cv;
 #define WIDTH 640
 #define HEIGHT 480
 #define NFRAME 1.0
+#define USEC_PER_SEC 1000000.0
 
 int main(int argc, char **argv)
 {
@@ -163,9 +164,9 @@ int main(int argc, char **argv)
 		time_capture = (double) (mid - begin) / CLOCKS_PER_SEC;
 		time_process = (double) (end - mid)   / CLOCKS_PER_SEC;
 
-		time_elapsed_wall = (double) (end_tv.tv_sec - begin_tv.tv_sec);
-		time_capture_wall = (double) (mid_tv.tv_sec - begin_tv.tv_sec);
-		time_process_wall = (double) (end_tv.tv_sec - mid_tv.tv_sec);
+		time_elapsed_wall = (double) ((end_tv.tv_sec + end_tv.tv_usec/USEC_PER_SEC) - (begin_tv.tv_sec + begin_tv.tv_usec/USEC_PER_SEC));
+		time_capture_wall = (double) ((mid_tv.tv_sec + mid_tv.tv_usec/USEC_PER_SEC) - (begin_tv.tv_sec + begin_tv.tv_usec/USEC_PER_SEC));
+		time_process_wall = (double) ((end_tv.tv_sec + end_tv.tv_usec/USEC_PER_SEC) - (mid_tv.tv_sec + mid_tv.tv_usec/USEC_PER_SEC));
 
 
 		avg_cpu_proc_time  += time_process;
