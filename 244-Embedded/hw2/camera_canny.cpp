@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 	//capture
 	for(int i = 0; i < n_imgs; ++i) {
 		begin = clock();// START
-		if ( 0 == gettimeofday(&begin_tv) ) {
+		if ( 0 == gettimeofday(&begin_tv, NULL) ) {
 			perror("Trouble with begin_tv");
 			exit(EXIT_FAILURE);
 		}
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 		cap >> frame[i];
 		if( frame[i].empty() ) break; // end of video stream
 		mid = clock();// MIDDLE
-		if ( 0 == gettimeofday(&mid_tv) ) {
+		if ( 0 == gettimeofday(&mid_tv, NULL) ) {
 			perror("Trouble with mid_tv");
 			exit(EXIT_FAILURE);
 		}
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
 		}
 
 		end = clock();//FINISH
-		if ( 0 == gettimeofday(&end_tv) ) {
+		if ( 0 == gettimeofday(&end_tv, NULL) ) {
 			perror("Trouble with end_tv");
 			exit(EXIT_FAILURE);
 		}
