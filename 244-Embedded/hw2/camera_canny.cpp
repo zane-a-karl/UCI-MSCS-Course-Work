@@ -192,6 +192,9 @@ int main(int argc, char **argv)
 	avg_cpu_proc_time  /= (double)n_imgs;
 	avg_wall_proc_time /= (double)n_imgs;
 
+	printf("The average CPU FPS is = %lf\n", NFRAME/avg_cpu_proc_time);
+	printf("The average WALL FPS is = %lf\n", NFRAME/avg_wall_proc_time);
+
 	printf("The difference in the cpu and wall time measurements is = %lf\n", avg_wall_proc_time - avg_cpu_proc_time);
 
 	//free resrources
