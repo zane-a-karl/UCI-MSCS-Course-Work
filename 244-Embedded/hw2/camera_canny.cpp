@@ -125,7 +125,7 @@ int main(int argc, char **argv)
 		}
 
 		sprintf(frame_title, "[RAW] frame%03d", i);
-		imshow(frame_title, frame[i]);
+		//		imshow(frame_title, frame[i]);
 
 		cvtColor(frame[i], grayframe[i], COLOR_BGR2GRAY);
 		images[i] = grayframe[i].data;
@@ -171,14 +171,14 @@ int main(int argc, char **argv)
 		avg_cpu_proc_time  += time_process;
 		avg_wall_proc_time += time_process_wall;
 
-		imshow("[GRAYSCALE] this is you, smile! :)", grayframe[i]);
+		//		imshow("[GRAYSCALE] this is you, smile! :)", grayframe[i]);
 
 		printf("Elapsed time for capturing+processing one frame: %lf + %lf => %lf seconds\n", time_capture, time_process, time_elapsed);
 		printf("FPS: %01lf\n", NFRAME/time_elapsed);
 
 		grayframe[i].data = edge;
 		printf("[INFO] (On the pop-up window) Press ESC to terminate the program...\n");
-		imshow("[EDGE] this is you, smile! :)", grayframe[i]);
+		//		imshow("[EDGE] this is you, smile! :)", grayframe[i]);
 		if( waitKey(10) == 27 ) break; // stop capturing by pressing ESC
 	}
 
