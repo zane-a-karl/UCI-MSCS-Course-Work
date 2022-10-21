@@ -111,17 +111,17 @@ int main(int argc, char **argv)
 	//capture
 	for(int i = 0; i < n_imgs; ++i) {
 		begin = clock();// START
-		if ( 0 == gettimeofday(&begin_tv, NULL) ) {
+		if ( 0 != gettimeofday(&begin_tv, NULL) ) {
 			perror("Trouble with begin_tv");
-			exit(EXIT_FAILURE);
+			exit(errno);
 		}
 
 		cap >> frame[i];
 		if( frame[i].empty() ) break; // end of video stream
 		mid = clock();// MIDDLE
-		if ( 0 == gettimeofday(&mid_tv, NULL) ) {
+		if ( 0 != gettimeofday(&mid_tv, NULL) ) {
 			perror("Trouble with mid_tv");
-			exit(EXIT_FAILURE);
+			exit(errno);
 		}
 
 		sprintf(frame_title, "[RAW] frame%03d", i);
@@ -154,9 +154,9 @@ int main(int argc, char **argv)
 		}
 
 		end = clock();//FINISH
-		if ( 0 == gettimeofday(&end_tv, NULL) ) {
+		if ( 0 != gettimeofday(&end_tv, NULL) ) {
 			perror("Trouble with end_tv");
-			exit(EXIT_FAILURE);
+			exit(errno);
 		}
 		
 		time_elapsed = (double) (end - begin) / CLOCKS_PER_SEC;
