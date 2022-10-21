@@ -185,6 +185,9 @@ int main(int argc, char **argv)
 		if( waitKey(10) == 27 ) break; // stop capturing by pressing ESC
 	}
 
+	printf("The sum of cpu times was %lf\n" , avg_cpu_proc_time);
+	printf("The sum of wall times was %lf\n", avg_wall_proc_time);
+
 	avg_cpu_proc_time  /= (double)n_imgs;
 	avg_wall_proc_time /= (double)n_imgs;
 
