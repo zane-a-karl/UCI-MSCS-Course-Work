@@ -67,8 +67,8 @@ int main(int argc, char **argv)
 				cout<<"Failed to open /dev/video0"<<endl;
         return 0;
 	 }
-	 cap.set(CV_CAP_PROP_FRAME_WIDTH, WIDTH);
-   cap.set(CV_CAP_PROP_FRAME_HEIGHT,HEIGHT);
+	 cap.set(CAP_PROP_FRAME_WIDTH, WIDTH);
+   cap.set(CAP_PROP_FRAME_HEIGHT,HEIGHT);
 
 	 Mat frame, grayframe;
 
@@ -88,7 +88,7 @@ int main(int argc, char **argv)
    //capture
 	 cap >> frame;
 	 mid = clock();
-	 cvtColor(frame, grayframe, CV_BGR2GRAY);
+	 cvtColor(frame, grayframe, COLOR_BGR2GRAY);
 	 image = grayframe.data;
 
    /****************************************************************************
