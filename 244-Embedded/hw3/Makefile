@@ -1,5 +1,5 @@
-obj-m := nothing.o
+obj-m:=nothing.o
 all:
-	make -C /lib/modules/4.14.67-v7+/build M=$(shell pwd) modules
+	make -C /lib/modules/5.15.61-v7+/build M=$(shell pwd) modules
 clean:
-	make -C /lib/modules/4.14.67-v7+/build M=$(shell pwd) clean
+	make -C /lib/modules/5.15.61-v7+/build M=$(shell pwd) clean
