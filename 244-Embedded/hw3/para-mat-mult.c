@@ -26,9 +26,11 @@ mat_mult (int **A,
 					int n)
 {
 	int **C = calloc(n, sizeof(int *));
+	#pragma omp for
 	for (int i=0; i<n; i++)
 		C[i] = calloc(n, sizeof(int));
-            
+
+	#pragma omp for
 	for (int i=0; i<n; i++)
 		for (int j=0; j<n; j++)
 			for (int k=0; k<n; k++)
@@ -44,7 +46,6 @@ main (int argc,
 	assert(argc > 1);
 	int n;
 	sscanf(argv[1], "%i", &n);
-	printf("n is %i", n);
 
 	printf("I am a non-parallel region.\n\n");
 	int **A = calloc(n, sizeof(int *));
@@ -63,7 +64,7 @@ main (int argc,
 	print_mat(A, n);
 	print_mat(B, n);
 	/* sequential code */
-#pragma omp parallel
+#pragma omp parallel num_threads(4)
 	{
 		printf("I am a parallel region.\n");
 		C = mat_mult(A, B, n);
