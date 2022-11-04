@@ -563,22 +563,22 @@ void gaussian_smooth(unsigned char *image, int rows, int cols, float sigma,
 
    pthread_t thread[N_T];
    int iret[N_T];
-   struct thread_args_x args[N_T];
+   struct thread_args_x args_x[N_T];
 
    int col_per_t = cols/N_T;
    int i;
 
    for(i=0; i<N_T; i++)
    {
-      args[i].image = image;
-      args[i].rows = rows;
-      args[i].cols = cols;
-      args[i].col_s = col_per_t*i;
-      args[i].col_e = col_per_t*(i+1);
-      args[i].center = center;
-      args[i].kernel = kernel;
-      args[i].tempim = tempim;
-      iret[i] = pthread_create(&thread[i], NULL, &blur_x, &args[i]);
+      args_x[i].image = image;
+      args_x[i].rows = rows;
+      args_x[i].cols = cols;
+      args_x[i].col_s = col_per_t*i;
+      args_x[i].col_e = col_per_t*(i+1);
+      args_x[i].center = center;
+      args_x[i].kernel = kernel;
+      args_x[i].tempim = tempim;
+      iret[i] = pthread_create(&thread[i], NULL, &blur_x, &args_x[i]);
    }
 
    for(i=0; i<N_T; i++)
@@ -589,7 +589,7 @@ void gaussian_smooth(unsigned char *image, int rows, int cols, float sigma,
    /****************************************************************************
    * Blur in the y - direction.
    ****************************************************************************/
-	 struct thread_args_y args_x[N_T];
+	 struct thread_args_y args_y[N_T];
 	 for(i=0; i<N_T; i++)
    {
       args_y[i].image = image;
