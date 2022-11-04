@@ -483,7 +483,7 @@ struct thread_args_y
     int center;
     float *kernel;
     float *tempim;
-	short int **smoothdim;
+	short int **smoothedim;
 };
 
 void *blur_y(void *arguments)
@@ -501,7 +501,7 @@ void *blur_y(void *arguments)
    int center = args->center;
    float *kernel = args->kernel;
    float *tempim = args->tempim;
-	 short int **smoothdim = args->smoothdim;
+	 short int **smoothedim = args->smoothedim;
    
    int r, c, rr;
    float dot, sum;
@@ -598,7 +598,7 @@ void gaussian_smooth(unsigned char *image, int rows, int cols, float sigma,
       args_y[i].center = center;
       args_y[i].kernel = kernel;
       args_y[i].tempim = tempim;
-			args_y[i].smoothdim = smoothdim;
+			args_y[i].smoothedim = smoothedim;
       iret[i] = pthread_create(&thread[i], NULL, &blur_y, &args_y[i]);
    }
 
