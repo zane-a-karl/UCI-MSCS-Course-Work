@@ -480,10 +480,12 @@ struct thread_args_y
     unsigned char *image;
     int rows;
     int cols;
+	  int row_s;
+    int row_e;
     int center;
     float *kernel;
     float *tempim;
-	short int **smoothedim;
+	  short int **smoothedim;
 };
 
 void *blur_y(void *arguments)
@@ -496,8 +498,8 @@ void *blur_y(void *arguments)
    unsigned char *image = args->image;
    int rows = args->rows;
    int cols = args->cols;
-	 //   int col_s = args->col_s;
-	 //   int col_e = args->col_e;
+	 int row_s = args->row_s;
+	 int row_e = args->row_e;
    int center = args->center;
    float *kernel = args->kernel;
    float *tempim = args->tempim;
@@ -508,7 +510,7 @@ void *blur_y(void *arguments)
 
 	 if(VERBOSE) printf("   Bluring the image in the Y-direction.\n");
    for(c=0;c<cols;c++){
-		 for(r=0;r<rows;r++){
+		 for(r=row_s;r<row_e;r++){
 			 sum = 0.0;
 			 dot = 0.0;
 			 for(rr=(-center);rr<=center;rr++){
@@ -589,12 +591,15 @@ void gaussian_smooth(unsigned char *image, int rows, int cols, float sigma,
    /****************************************************************************
    * Blur in the y - direction.
    ****************************************************************************/
+	 int row_per_t = rows/N_T;
 	 struct thread_args_y args_y[N_T];
 	 for(i=0; i<N_T; i++)
    {
       args_y[i].image = image;
       args_y[i].rows = rows;
       args_y[i].cols = cols;
+			args_y[i].row_s = row_per_t*i;
+      args_y[i].row_e = row_per_t*(i+1);
       args_y[i].center = center;
       args_y[i].kernel = kernel;
       args_y[i].tempim = tempim;
