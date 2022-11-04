@@ -475,6 +475,17 @@ void *blur_x(void *arguments)
    }
 }
 
+struct thread_args_y
+{
+    unsigned char *image;
+    int rows;
+    int cols;
+    int center;
+    float *kernel;
+    float *tempim;
+	short int **smoothdim;
+};
+
 void *blur_y(void *arguments)
 {
    /****************************************************************************
@@ -490,6 +501,7 @@ void *blur_y(void *arguments)
    int center = args->center;
    float *kernel = args->kernel;
    float *tempim = args->tempim;
+	 short int **smoothdim = args->smoothdim;
    
    int r, c, rr;
    float dot, sum;
@@ -577,17 +589,17 @@ void gaussian_smooth(unsigned char *image, int rows, int cols, float sigma,
    /****************************************************************************
    * Blur in the y - direction.
    ****************************************************************************/
+	 struct thread_args_y args_x[N_T];
 	 for(i=0; i<N_T; i++)
    {
-      args[i].image = image;
-      args[i].rows = rows;
-      args[i].cols = cols;
-      args[i].col_s = col_per_t*i;
-      args[i].col_e = col_per_t*(i+1);
-      args[i].center = center;
-      args[i].kernel = kernel;
-      args[i].tempim = tempim;
-      iret[i] = pthread_create(&thread[i], NULL, &blur_y, &args[i]);
+      args_y[i].image = image;
+      args_y[i].rows = rows;
+      args_y[i].cols = cols;
+      args_y[i].center = center;
+      args_y[i].kernel = kernel;
+      args_y[i].tempim = tempim;
+			args_y[i].smoothdim = smoothdim;
+      iret[i] = pthread_create(&thread[i], NULL, &blur_y, &args_y[i]);
    }
 
    for(i=0; i<N_T; i++)
