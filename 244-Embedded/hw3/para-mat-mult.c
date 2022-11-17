@@ -64,7 +64,7 @@ main (int argc,
 	print_mat(A, n);
 	print_mat(B, n);
 	/* sequential code */
-#pragma omp parallel num_threads(4)
+#pragma omp parallel num_threads(n)
 	{
 		printf("I am a parallel region.\n");
 		C = mat_mult(A, B, n);
