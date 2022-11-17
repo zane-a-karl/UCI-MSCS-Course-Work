@@ -71,9 +71,9 @@ int main(int argc, char **argv)
 				printf("Failed to open media\n");
         return 0;
 	 }
-//	 cap.set(CV_CAP_PROP_FRAME_WIDTH, WIDTH); // Set input resolution when the video is captured from /dev/video*, i.e. the webcam.
-//   cap.set(CV_CAP_PROP_FRAME_HEIGHT,HEIGHT);
-	 printf("Media Input: %.0f, %.0f\n", cap.get(CV_CAP_PROP_FRAME_WIDTH), cap.get(CV_CAP_PROP_FRAME_HEIGHT));
+//	 cap.set(CAP_PROP_FRAME_WIDTH, WIDTH); // Set input resolution when the video is captured from /dev/video*, i.e. the webcam.
+//   cap.set(CAP_PROP_FRAME_HEIGHT,HEIGHT);
+	 printf("Media Input: %.0f, %.0f\n", cap.get(CAP_PROP_FRAME_WIDTH), cap.get(CAP_PROP_FRAME_HEIGHT));
 
 	 // For low-end CPUs, may wait a while until camera stabilizes
    printf("Sleep 3 seconds for camera stabilization...\n");
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 		 cap >> frame;
 		 resize(frame, frame, Size(WIDTH, HEIGHT), 0, 0, INTER_LINEAR);
      //extract the image in gray format
-		 cvtColor(frame, grayframe, CV_BGR2GRAY);
+		 cvtColor(frame, grayframe, COLOR_BGR2GRAY);
 	   image = grayframe.data;
 
      /****************************************************************************
