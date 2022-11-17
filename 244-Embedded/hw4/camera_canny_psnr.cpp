@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 	case GROUND:
 		rows = GROUND_HEIGHT;
 		cols = GROUND_WIDTH;
-		NFRAME = 1.0;
+		NFRAME = 30.0;
 		if(!cap.open("ground_crew.h264")){
 			printf("Failed to open media\n");
 			return 0;
