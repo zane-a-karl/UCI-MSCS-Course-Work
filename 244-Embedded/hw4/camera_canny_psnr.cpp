@@ -22,7 +22,7 @@ using namespace cv;
 #define TIGER_WIDTH 888
 #define TIGER_HEIGHT 900
 
-#define NFRAME 30.0
+//#define NFRAME 30.0
 
 enum IMGSRC {PICAM, GROUND, TIGER};
 
@@ -43,6 +43,7 @@ int main(int argc, char **argv)
 													 suppression. */
 	int count;            /* Frame count iterator */
 	enum IMGSRC img_src = PICAM;
+	float NFRAME = 30.0;
 
 	/****************************************************************************
    * Get the command line arguments.
@@ -84,6 +85,7 @@ int main(int argc, char **argv)
 	case GROUND:
 		rows = GROUND_HEIGHT;
 		cols = GROUND_WIDTH;
+		NFRAME = 1.0;
 		if(!cap.open("ground_crew.h264")){
 			printf("Failed to open media\n");
 			return 0;
@@ -92,6 +94,7 @@ int main(int argc, char **argv)
 	case TIGER:
 		rows = TIGER_HEIGHT;
 		cols = TIGER_WIDTH;
+		NFRAME = 1.0;
 		if(!cap.open("tiger_face.jpg")){
 			printf("Failed to open media\n");
 			return 0;
