@@ -13,8 +13,8 @@ using namespace cv;
 /* ground_crew.h264: 1280x720 */
 /* tiger_face.jpg: 888x900 */
 
-#define DEFAULT_WIDTH 640
-#define DEFAULT_HEIGHT 480
+#define PICAM_WIDTH 640
+#define PICAM_HEIGHT 480
 
 #define GROUND_WIDTH 1280
 #define GROUND_HEIGHT 720
@@ -24,7 +24,7 @@ using namespace cv;
 
 #define NFRAME 30.0
 
-enum IMGSRC = {DEFAULT, GROUND, TIGER};
+enum IMGSRC {PICAM, GROUND, TIGER};
 
 int main(int argc, char **argv)
 {
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 													 gradient image that passes non-maximal
 													 suppression. */
 	int count;            /* Frame count iterator */
-	enum IMGSRC img_src = DEFAULT;
+	enum IMGSRC img_src = PICAM;
 
 	/****************************************************************************
    * Get the command line arguments.
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 		fprintf(stderr," of non-zero edge\n                  strengths for ");
 		fprintf(stderr,"hysteresis. The fraction is used to compute\n");
 		fprintf(stderr,"                  the high edge strength threshold.\n");
-		fprintf(stderr,"      imgsrc:      integer 0=default, 1=ground_ctrl, 2=tiger\n");		
+		fprintf(stderr,"      imgsrc:      integer 0=picam, 1=ground_ctrl, 2=tiger\n");		
 		fprintf(stderr,"      writedirim: Optional argument to output ");
 		fprintf(stderr,"a floating point");
 		fprintf(stderr," direction image.\n\n");
@@ -73,9 +73,9 @@ int main(int argc, char **argv)
 	// Check VideoCapture documentation for more details
 	img_src = (enum IMGSRC)atoi(argv[4]);
 	switch (img_src) {
-	case DEFAULT:
-		rows = DEFAULT_HEIGHT;
-		cols = DEFAULT_WIDTH;
+	case PICAM:
+		rows = PICAM_HEIGHT;
+		cols = PICAM_WIDTH;
 		if(!cap.open(0)){
 			printf("Failed to open media\n");
 			return 0;
@@ -129,8 +129,8 @@ int main(int argc, char **argv)
 		//capture
 		cap >> frame;
 		switch (img_src) {
-		case DEFAULT:
-			resize(frame, frame, Size(DEFAULT_WIDTH, DEFAULT_HEIGHT), 0, 0, INTER_LINEAR);			
+		case PICAM:
+			resize(frame, frame, Size(PICAM_WIDTH, PICAM_HEIGHT), 0, 0, INTER_LINEAR);			
 			break;
 		case GROUND:
 			resize(frame, frame, Size(GROUND_WIDTH, GROUND_HEIGHT), 0, 0, INTER_LINEAR);
