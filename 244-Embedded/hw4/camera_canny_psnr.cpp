@@ -206,10 +206,10 @@ int main(int argc, char **argv)
 	while(count<NFRAME) {
 
 		/* Get the edge image name */
-		sprintf(edge_image_name, "EDGE_%03d.pgm", count);
+		sprintf(edge_image_name, "edge/EDGE_%03d.pgm", count);
 
     /* Get the raw image name */
-		sprintf(raw_image_name, "RAW_%03d.pgm", count);
+		sprintf(raw_image_name, "raw/RAW_%03d.pgm", count);
 		PSNR = PSNR + calcpsnr(raw_image_name, edge_image_name);
 		count++;
 	}
