@@ -219,7 +219,7 @@ int main(int argc, char **argv)
 	PSNR = PSNR / NFRAME;
 	printf("Average PSNR value = %3.2f \n", PSNR);
 
-	snprintf(line, len, "%.0f, %.0f, %.0f, %i, %i, %i, %lf, %4f, %3.2f\n",
+	snprintf(line, len, "%3.2f, %3.2f, %3.2f, %i, %i, %i, %lf, %4f, %3.2f\n",
 					 sigma, tlow, thigh, cols, rows, mp,
 					 time_elapsed/1000000, NFRAME/(time_elapsed/1000000), PSNR);
 	if ( fputs(line, fout) < 0 ) {
