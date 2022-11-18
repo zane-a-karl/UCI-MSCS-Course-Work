@@ -62,8 +62,8 @@ int main(int argc, char **argv)
 		fprintf(stderr,"                  the high edge strength threshold.\n");
 		fprintf(stderr,"      imgwidth:    integer 400 850 1300\n");
 		fprintf(stderr,"      imgheight:   integer 100 550 1000\n");
-		fprintf(stderr,"      multi-thread:integer 0=none, 1=pt, 2=omp\n");				
-		fprintf(stderr,"      imgsrc:      integer 0=picam, 1=ground_ctrl, 2=tiger\n");		
+		fprintf(stderr,"      multi-thread:integer 0=none, 1=pt, 2=omp\n");
+		fprintf(stderr,"      imgsrc:      integer 0=picam, 1=ground_ctrl, 2=tiger\n");
 		fprintf(stderr,"      writedirim: Optional argument to output ");
 		fprintf(stderr,"a floating point");
 		fprintf(stderr," direction image.\n\n");
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 
 	int len = 256;
 	char *line = (char *)calloc(len, sizeof(char));
-	
+
 	FILE *fout;
 	VideoCapture cap;
 	// open the default camera (/dev/video0) OR a video OR an image
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	case PICAM:
 		if ( NULL == (fout = fopen("picam.csv", "a"))) {
 			printf("Failed to open picam.csv\n");
-			return 0;			
+			return 0;
 		}
 		if(!cap.open(0)){
 			printf("Failed to open media\n");
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 		NFRAME = 30.0;
 		if ( NULL == (fout = fopen("ground.csv", "a"))) {
 			printf("Failed to open ground.csv\n");
-			return 0;			
+			return 0;
 		}
 		if(!cap.open("ground_crew.h264")){
 			printf("Failed to open media\n");
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 		NFRAME = 1.0;
 		if ( NULL == (fout = fopen("tiger.csv", "a"))) {
 			printf("Failed to open tiger.csv\n");
-			return 0;			
+			return 0;
 		}
 		if(!cap.open("tiger_face.jpg")){
 			printf("Failed to open media\n");
@@ -131,8 +131,8 @@ int main(int argc, char **argv)
 	printf("Media Input: %.0f, %.0f\n", cap.get(CAP_PROP_FRAME_WIDTH), cap.get(CAP_PROP_FRAME_HEIGHT));
 
 	// For low-end CPUs, may wait a while until camera stabilizes
-	printf("Sleep 3 seconds for camera stabilization...\n");
-	usleep(3*1e6);
+	//	printf("Sleep 3 seconds for camera stabilization...\n");
+	//	usleep(3*1e6);
 	printf("=== Start Canny Edge Detection: %.0f frames ===\n", NFRAME);
 
 	Mat frame, grayframe;
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 	while(count<NFRAME) {
 		//capture
 		cap >> frame;
-		resize(frame, frame, Size(cols, rows), 0, 0, INTER_LINEAR);			
+		resize(frame, frame, Size(cols, rows), 0, 0, INTER_LINEAR);
 
 		//extract the image in gray format
 		cvtColor(frame, grayframe, COLOR_BGR2GRAY);
