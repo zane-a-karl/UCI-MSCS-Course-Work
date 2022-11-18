@@ -6,6 +6,7 @@
 #include "canny_util.h"
 #include "calcpsnr.h"
 #include <sys/time.h>
+#include <stdlib.h>
 using namespace std;
 using namespace cv;
 
@@ -13,14 +14,14 @@ using namespace cv;
 /* ground_crew.h264: 1280x720 */
 /* tiger_face.jpg: 888x900 */
 
-#define PICAM_WIDTH 640
-#define PICAM_HEIGHT 480
+// #define PICAM_WIDTH 640
+// #define PICAM_HEIGHT 480
 
-#define GROUND_WIDTH 1280
-#define GROUND_HEIGHT 720
+// #define GROUND_WIDTH 1280
+// #define GROUND_HEIGHT 720
 
-#define TIGER_WIDTH 888
-#define TIGER_HEIGHT 900
+// #define TIGER_WIDTH 888
+// #define TIGER_HEIGHT 900
 
 //#define NFRAME 30.0
 
@@ -43,12 +44,13 @@ int main(int argc, char **argv)
 													 suppression. */
 	int count;            /* Frame count iterator */
 	enum IMGSRC img_src = PICAM;
+	int mp;
 	float NFRAME = 30.0;
 
 	/****************************************************************************
    * Get the command line arguments.
    ****************************************************************************/
-	if(argc < 5){
+	if(argc < 8){
 		fprintf(stderr,"\n<USAGE> %s sigma tlow thigh imgsrc [writedirim]\n",argv[0]);
 		fprintf(stderr,"      sigma:      Standard deviation of the gaussian");
 		fprintf(stderr," blur kernel.\n");
@@ -58,6 +60,9 @@ int main(int argc, char **argv)
 		fprintf(stderr," of non-zero edge\n                  strengths for ");
 		fprintf(stderr,"hysteresis. The fraction is used to compute\n");
 		fprintf(stderr,"                  the high edge strength threshold.\n");
+		fprintf(stderr,"      imgwidth:    integer 400 850 1300\n");
+		fprintf(stderr,"      imgheight:   integer 100 550 1000\n");
+		fprintf(stderr,"      multi-thread:integer 0=none, 1=pt, 2=omp\n");				
 		fprintf(stderr,"      imgsrc:      integer 0=picam, 1=ground_ctrl, 2=tiger\n");		
 		fprintf(stderr,"      writedirim: Optional argument to output ");
 		fprintf(stderr,"a floating point");
@@ -66,35 +71,48 @@ int main(int argc, char **argv)
 	}
 
 	sigma = atof(argv[1]);
-	tlow = atof(argv[2]);
+	tlow  = atof(argv[2]);
 	thigh = atof(argv[3]);
+	cols  = atoi(argv[4]);
+	rows  = atoi(argv[5]);
+	mp    = atoi(argv[6]);
 
+	int len = 256;
+	char *line = (char *)calloc(len, sizeof(char));
+	
+	FILE *fout;
 	VideoCapture cap;
 	// open the default camera (/dev/video0) OR a video OR an image
 	// Check VideoCapture documentation for more details
-	img_src = (enum IMGSRC)atoi(argv[4]);
+	img_src = (enum IMGSRC)atoi(argv[7]);
 	switch (img_src) {
 	case PICAM:
-		rows = PICAM_HEIGHT;
-		cols = PICAM_WIDTH;
+		if ( NULL == (fout = fopen(picam.csv, "a"))) {
+			printf("Failed to open picam.csv\n");
+			return 0;			
+		}
 		if(!cap.open(0)){
 			printf("Failed to open media\n");
 			return 0;
 		}
 		break;
 	case GROUND:
-		rows = GROUND_HEIGHT;
-		cols = GROUND_WIDTH;
 		NFRAME = 30.0;
+		if ( NULL == (fout = fopen(ground.csv, "a"))) {
+			printf("Failed to open ground.csv\n");
+			return 0;			
+		}
 		if(!cap.open("ground_crew.h264")){
 			printf("Failed to open media\n");
 			return 0;
 		}
 		break;
 	case TIGER:
-		rows = TIGER_HEIGHT;
-		cols = TIGER_WIDTH;
 		NFRAME = 1.0;
+		if ( NULL == (fout = fopen(tiger.csv, "a"))) {
+			printf("Failed to open tiger.csv\n");
+			return 0;			
+		}
 		if(!cap.open("tiger_face.jpg")){
 			printf("Failed to open media\n");
 			return 0;
@@ -102,16 +120,10 @@ int main(int argc, char **argv)
 		break;
 	}
 
-	if(argc == 6) dirfilename = (char *) "dummy";
+
+	if(argc == 8) dirfilename = (char *) "dummy";
 	else dirfilename = NULL;
 
-
-	// if(!cap.open(0)){
-	// 	//   if(!cap.open("ground_crew.h264")){
-	// 	//   if(!cap.open("tiger_face.jpg")){
-	// 	printf("Failed to open media\n");
-	// 	return 0;
-	// }
 
 	// Set input resolution when the video is captured from /dev/video*, i.e. the webcam.
 	//	 cap.set(CAP_PROP_FRAME_WIDTH, WIDTH);
@@ -217,7 +229,16 @@ int main(int argc, char **argv)
 	PSNR = PSNR / NFRAME;
 	printf("Average PSNR value = %3.2f \n", PSNR);
 
+	snprintf(line, len, "%.0f, %.0f, %.0f, %i, %i, %i, %lf, %4f, %3.2f\n",
+					 sigma, tlow, thigh, cols, rows, mp,
+					 time_elapsed/1000000, NFRAME/(time_elapsed/1000000), PSNR);
+	if ( fputs(line, fout) < 0 ) {
+		printf("Error appending line to csv file\n");
+		return 0;
+	}
+
 	//free resources
+	fclose(fout);
 	//    delete image;
 	return 0;
 }
