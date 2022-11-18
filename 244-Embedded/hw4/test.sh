@@ -10,7 +10,7 @@ thigh=(0.6 0.75 0.9)
 width=(400 850 1300)
 height=(100 550 1000)
 #MP    : 1x, pthread, openmp
-
+c=0
 for sig in ${sigma[@]};
 do
 		for low in ${tlow[@]};
@@ -26,6 +26,8 @@ do
 										./psnr $sig $low $high $w $h 0 $1
 										./psnr_pt $sig $low $high $w $h 1 $1
 										./psnr_omp $sig $low $high $w $h 2 $1
+										((c++))
+										echo "Finished iteration $c"
 								done
 						done
 				done
