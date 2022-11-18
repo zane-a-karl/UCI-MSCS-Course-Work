@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 	}
 
 
-	if(argc == 8) dirfilename = (char *) "dummy";
+	if(argc == 9) dirfilename = (char *) "dummy";
 	else dirfilename = NULL;
 
 
