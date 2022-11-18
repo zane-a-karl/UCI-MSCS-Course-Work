@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 	img_src = (enum IMGSRC)atoi(argv[7]);
 	switch (img_src) {
 	case PICAM:
-		if ( NULL == (fout = fopen(picam.csv, "a"))) {
+		if ( NULL == (fout = fopen("picam.csv", "a"))) {
 			printf("Failed to open picam.csv\n");
 			return 0;			
 		}
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
 		break;
 	case GROUND:
 		NFRAME = 30.0;
-		if ( NULL == (fout = fopen(ground.csv, "a"))) {
+		if ( NULL == (fout = fopen("ground.csv", "a"))) {
 			printf("Failed to open ground.csv\n");
 			return 0;			
 		}
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
 		break;
 	case TIGER:
 		NFRAME = 1.0;
-		if ( NULL == (fout = fopen(tiger.csv, "a"))) {
+		if ( NULL == (fout = fopen("tiger.csv", "a"))) {
 			printf("Failed to open tiger.csv\n");
 			return 0;			
 		}
@@ -143,17 +143,7 @@ int main(int argc, char **argv)
 	while(count<NFRAME) {
 		//capture
 		cap >> frame;
-		switch (img_src) {
-		case PICAM:
-			resize(frame, frame, Size(PICAM_WIDTH, PICAM_HEIGHT), 0, 0, INTER_LINEAR);			
-			break;
-		case GROUND:
-			resize(frame, frame, Size(GROUND_WIDTH, GROUND_HEIGHT), 0, 0, INTER_LINEAR);
-			break;
-		case TIGER:
-			resize(frame, frame, Size(TIGER_WIDTH, TIGER_HEIGHT), 0, 0, INTER_LINEAR);
-			break;
-		}
+		resize(frame, frame, Size(cols, rows), 0, 0, INTER_LINEAR);			
 
 		//extract the image in gray format
 		cvtColor(frame, grayframe, COLOR_BGR2GRAY);
