@@ -23,9 +23,9 @@ do
 								do
 										#assume that they
 										#have already been compiled
-										./psnr $sig $low $high $w $h 0 $1
-										#./psnr-pt $sig $low $high $w $h 1 $1
-										#./psnr-omp $sig $low $high $w $h 2 $1
+										./psnr $sig $low $high $w $h 0 $1 &
+										./psnr_pt $sig $low $high $w $h 1 $1 &
+										./psnr_omp $sig $low $high $w $h 2 $1 &
 								done
 						done
 				done
