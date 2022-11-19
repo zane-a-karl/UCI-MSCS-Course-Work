@@ -29,6 +29,7 @@ enum IMGSRC {PICAM, GROUND, TIGER};
 
 int main(int argc, char **argv)
 {
+	fclose(stdout);
 	char* dirfilename;        /* Name of the output gradient direction image */
 	char outfilename[128];    /* Name of the output "edge" image */
 	char composedfname[128];  /* Name of the output "direction" image */
@@ -118,6 +119,16 @@ int main(int argc, char **argv)
 			return 0;
 		}
 		break;
+	default:
+		if ( NULL == (fout = fopen("picam.csv", "a"))) {
+			printf("Failed to open picam.csv\n");
+			return 0;
+		}
+		if(!cap.open("picam.h264")){
+			printf("Failed to open media\n");
+			return 0;
+		}
+		break;
 	}
 
 
@@ -131,8 +142,8 @@ int main(int argc, char **argv)
 	printf("Media Input: %.0f, %.0f\n", cap.get(CAP_PROP_FRAME_WIDTH), cap.get(CAP_PROP_FRAME_HEIGHT));
 
 	// For low-end CPUs, may wait a while until camera stabilizes
-	//	printf("Sleep 3 seconds for camera stabilization...\n");
-	//	usleep(3*1e6);
+	printf("Sleep 3 seconds for camera stabilization...\n");
+	usleep(3*1e6);
 	printf("=== Start Canny Edge Detection: %.0f frames ===\n", NFRAME);
 
 	Mat frame, grayframe;

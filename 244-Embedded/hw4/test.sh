@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Remember! This script takes the
-#img id 0, 1 ,2 as input=$1
+#img id 0, 1 ,2, 3 as input=$1
 
 # 3^6 different outputs
 sigma=(0.6 1.5 2.4)
