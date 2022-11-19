@@ -142,8 +142,8 @@ int main(int argc, char **argv)
 	printf("Media Input: %.0f, %.0f\n", cap.get(CAP_PROP_FRAME_WIDTH), cap.get(CAP_PROP_FRAME_HEIGHT));
 
 	// For low-end CPUs, may wait a while until camera stabilizes
-	printf("Sleep 3 seconds for camera stabilization...\n");
-	usleep(3*1e6);
+	//	printf("Sleep 3 seconds for camera stabilization...\n");
+	//	usleep(3*1e6);
 	printf("=== Start Canny Edge Detection: %.0f frames ===\n", NFRAME);
 
 	Mat frame, grayframe;
